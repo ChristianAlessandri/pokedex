@@ -5,9 +5,12 @@ import { PokemonProvider } from "@/context/PokemonContext";
 const Home = () => {
   return (
     <PokemonProvider>
-      <main className="flex flex-col items-center justify-between bg-neutral-50 dark:bg-neutral-950">
+      <main className="flex flex-col items-center justify-between min-h-screen bg-neutral-50 dark:bg-neutral-950">
         <div className="flex w-full">
-          <div className="w-full lg:w-2/3 flex justify-center mt-20">
+          <div className="w-full lg:w-2/3 justify-center mt-20 flex flex-col items-center">
+            <h1 className="text-neutral-950 dark:text-neutral-50 mb-8 text-5xl font-semibold">
+              Pokédex
+            </h1>
             <PokemonList />
           </div>
           <div className="lg:w-1/3">
