@@ -6,6 +6,19 @@ interface Pokemon {
   imageUrl: string;
   evolutionStage: string;
   types: string[];
+  height: number;
+  weight: number;
+  evolutionChain?: EvolutionChain[];
+  stats?: {
+    name: string;
+    value: number;
+  }[];
+}
+
+export interface EvolutionChain {
+  name: string;
+  id: number;
+  imageUrl: string;
 }
 
 const POKEMON_LIMIT = 1025;
@@ -55,6 +68,8 @@ export const fetchPokemonList = async (): Promise<Pokemon[]> => {
           imageUrl: pokemonDetails.data.sprites.front_default,
           evolutionStage,
           types,
+          height: pokemonDetails.data.height,
+          weight: pokemonDetails.data.weight,
         };
       })
     );
@@ -91,7 +106,17 @@ export const fetchPokemonById = async (id: number): Promise<Pokemon | null> => {
       pokemonName
     );
 
+    // Ottieni la catena di evoluzione completa
+    const evolutionChainData = await getFullEvolutionChain(
+      evolutionChain.data.chain
+    );
+
     const types = pokemonDetails.data.types.map((t: any) => t.type.name);
+
+    const stats = pokemonDetails.data.stats.map((stat: any) => ({
+      name: stat.stat.name,
+      value: stat.base_stat,
+    }));
 
     return {
       id: pokemonDetails.data.id,
@@ -99,9 +124,47 @@ export const fetchPokemonById = async (id: number): Promise<Pokemon | null> => {
       imageUrl: pokemonDetails.data.sprites.front_default,
       evolutionStage,
       types,
+      height: pokemonDetails.data.height,
+      weight: pokemonDetails.data.weight,
+      evolutionChain: evolutionChainData,
+      stats,
     };
   } catch (error) {
     console.error(`Error fetching Pokémon with ID ${id}:`, error);
     return null;
   }
+};
+
+const getFullEvolutionChain = async (chain: any): Promise<EvolutionChain[]> => {
+  const evolutionChain: EvolutionChain[] = [];
+
+  const basePokemon = await getPokemonDetails(chain.species.url);
+  evolutionChain.push(basePokemon);
+
+  const addEvolutions = async (evolution: any) => {
+    if (evolution.evolves_to.length > 0) {
+      for (const evo of evolution.evolves_to) {
+        const pokemon = await getPokemonDetails(evo.species.url);
+        evolutionChain.push(pokemon);
+        await addEvolutions(evo);
+      }
+    }
+  };
+
+  await addEvolutions(chain);
+  return evolutionChain;
+};
+
+const getPokemonDetails = async (url: string): Promise<EvolutionChain> => {
+  const speciesResponse = await axios.get(url);
+  const pokemonId = speciesResponse.data.id;
+  const pokemonResponse = await axios.get(
+    `https://pokeapi.co/api/v2/pokemon/${pokemonId}`
+  );
+
+  return {
+    name: speciesResponse.data.name,
+    id: pokemonId,
+    imageUrl: pokemonResponse.data.sprites.front_default,
+  };
 };
