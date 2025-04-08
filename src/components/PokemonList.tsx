@@ -5,8 +5,11 @@ import { fetchPokemonList } from "../app/pokemonService";
 import { capitalize } from "@/app/utils";
 import Image from "next/image";
 import { typeColors } from "@/app/pokemonUtils";
+import { usePokemonContext } from "@/context/PokemonContext";
 
 const PokemonList = () => {
+  const { setSelectedPokemonId } = usePokemonContext();
+
   const [pokemon, setPokemon] = useState<
     {
       id: number;
@@ -40,7 +43,8 @@ const PokemonList = () => {
         return (
           <div
             key={p.name}
-            className="relative flex flex-col items-center justify-between rounded-xl w-64 lg:w-56 xl:w-64 h-40 text-neutral-950 dark:text-neutral-50 shadow-lg dark:shadow-none bg-neutral-50 dark:bg-neutral-950 border border-neutral-600/10 dark:border-neutral-400/10"
+            className="relative flex flex-col items-center justify-between rounded-xl w-64 lg:w-56 xl:w-64 h-40 text-neutral-950 dark:text-neutral-50 shadow-lg dark:shadow-none bg-neutral-50 dark:bg-neutral-950 border border-neutral-600/10 dark:border-neutral-400/10 cursor-pointer hover:scale-105 transition-transform"
+            onClick={() => setSelectedPokemonId(p.id)}
           >
             {/* Background */}
             <div className="absolute rounded-xl w-64 lg:w-56 xl:w-64 h-40 overflow-hidden">

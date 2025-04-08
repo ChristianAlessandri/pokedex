@@ -6,6 +6,7 @@ import { capitalize } from "@/app/utils";
 import Image from "next/image";
 import { typeColors } from "@/app/pokemonUtils";
 import { PokemonJapaneseName } from "./PokemonJapaneseName";
+import { usePokemonContext } from "@/context/PokemonContext";
 
 interface Props {
   id: number;
@@ -24,7 +25,9 @@ const getStatName = (apiName: string): string => {
   return statNames[apiName] || capitalize(apiName.replace("-", " "));
 };
 
-const PokemonCard = ({ id }: Props) => {
+const PokemonCard = () => {
+  const { selectedPokemonId } = usePokemonContext();
+
   const [pokemon, setPokemon] = useState<{
     id: number;
     name: string;
@@ -47,13 +50,13 @@ const PokemonCard = ({ id }: Props) => {
 
   useEffect(() => {
     const getPokemon = async () => {
-      const data = await fetchPokemonById(id);
+      const data = await fetchPokemonById(selectedPokemonId);
       setPokemon(data);
       setLoading(false);
     };
 
     getPokemon();
-  }, [id]);
+  }, [selectedPokemonId]);
 
   if (loading || !pokemon)
     return <p className="text-neutral-950 dark:text-neutral-50">Loading...</p>;
@@ -124,8 +127,8 @@ const PokemonCard = ({ id }: Props) => {
 
       {/* Japanese Name */}
       <div className="absolute w-96 h-96 pointer-events-none">
-        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 translate-y-1/4 writing-mode-vertical-rl text-5xl font-semibold text-center opacity-50 pointer-events-none">
-          <PokemonJapaneseName pokemonId={id} />
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 writing-mode-vertical-rl text-5xl font-semibold text-center opacity-50 pointer-events-none">
+          <PokemonJapaneseName pokemonId={selectedPokemonId} />
         </div>
       </div>
 
