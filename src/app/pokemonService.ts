@@ -8,6 +8,8 @@ interface Pokemon {
   types: string[];
 }
 
+const POKEMON_LIMIT = 1025;
+
 const getEvolutionStage = (
   chain: any,
   pokemonName: string,
@@ -26,8 +28,6 @@ const getEvolutionStage = (
 };
 
 export const fetchPokemonList = async (): Promise<Pokemon[]> => {
-  const POKEMON_LIMIT = 1025;
-
   try {
     const response = await axios.get(
       "https://pokeapi.co/api/v2/pokemon?limit=" + POKEMON_LIMIT
@@ -63,5 +63,45 @@ export const fetchPokemonList = async (): Promise<Pokemon[]> => {
   } catch (error) {
     console.error("Error in retrieving Pokémon data: ", error);
     return [];
+  }
+};
+
+export const fetchPokemonById = async (id: number): Promise<Pokemon | null> => {
+  if (id < 1 || id > POKEMON_LIMIT) {
+    console.warn(
+      `Invalid Pokémon ID: ${id}. It must be between 1 and ${POKEMON_LIMIT}.`
+    );
+    return null;
+  }
+
+  try {
+    const pokemonDetails = await axios.get(
+      `https://pokeapi.co/api/v2/pokemon/${id}`
+    );
+    const pokemonName = pokemonDetails.data.name;
+
+    const speciesUrl = pokemonDetails.data.species.url;
+    const speciesDetails = await axios.get(speciesUrl);
+
+    const evolutionChainUrl = speciesDetails.data.evolution_chain.url;
+    const evolutionChain = await axios.get(evolutionChainUrl);
+
+    const evolutionStage = getEvolutionStage(
+      evolutionChain.data.chain,
+      pokemonName
+    );
+
+    const types = pokemonDetails.data.types.map((t: any) => t.type.name);
+
+    return {
+      id: pokemonDetails.data.id,
+      name: pokemonName,
+      imageUrl: pokemonDetails.data.sprites.front_default,
+      evolutionStage,
+      types,
+    };
+  } catch (error) {
+    console.error(`Error fetching Pokémon with ID ${id}:`, error);
+    return null;
   }
 };

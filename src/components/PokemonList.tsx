@@ -4,27 +4,7 @@ import { useEffect, useState } from "react";
 import { fetchPokemonList } from "../app/pokemonService";
 import { capitalize } from "@/app/utils";
 import Image from "next/image";
-
-const typeColors: Record<string, string> = {
-  normal: "#A8A77A",
-  fire: "#EE8130",
-  water: "#6390F0",
-  electric: "#F7D02C",
-  grass: "#7AC74C",
-  ice: "#96D9D6",
-  fighting: "#C22E28",
-  poison: "#A33EA1",
-  ground: "#E2BF65",
-  flying: "#A98FF3",
-  psychic: "#F95587",
-  bug: "#A6B91A",
-  rock: "#B6A136",
-  ghost: "#735797",
-  dragon: "#6F35FC",
-  dark: "#705746",
-  steel: "#B7B7CE",
-  fairy: "#D685AD",
-};
+import { typeColors } from "@/app/pokemonUtils";
 
 const PokemonList = () => {
   const [pokemon, setPokemon] = useState<
@@ -52,7 +32,7 @@ const PokemonList = () => {
     return <p className="text-neutral-950 dark:text-neutral-50">Loading...</p>;
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-20 p-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-20 p-4">
       {pokemon.map((p) => {
         const bgColor1 = typeColors[p.types[0]] || "#A8A77A";
         const bgColor2 = p.types[1] ? typeColors[p.types[1]] : bgColor1;
@@ -60,10 +40,10 @@ const PokemonList = () => {
         return (
           <div
             key={p.name}
-            className="relative flex flex-col items-center justify-between rounded-xl w-64 h-40 text-neutral-950 dark:text-neutral-50 shadow-lg dark:shadow-none bg-neutral-50 dark:bg-neutral-950 border border-neutral-600/10 dark:border-neutral-400/10"
+            className="relative flex flex-col items-center justify-between rounded-xl w-64 lg:w-56 xl:w-64 h-40 text-neutral-950 dark:text-neutral-50 shadow-lg dark:shadow-none bg-neutral-50 dark:bg-neutral-950 border border-neutral-600/10 dark:border-neutral-400/10"
           >
             {/* Background */}
-            <div className="absolute rounded-xl w-64 h-40 overflow-hidden">
+            <div className="absolute rounded-xl w-64 lg:w-56 xl:w-64 h-40 overflow-hidden">
               <div
                 className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/3 w-40 h-40 rounded-full"
                 style={{
