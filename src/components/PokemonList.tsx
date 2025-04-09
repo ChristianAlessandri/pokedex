@@ -60,7 +60,7 @@ const PokemonList = () => {
       </div>
 
       {/* Pokémon List */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-20 p-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-20 p-4">
         {filteredPokemon.map((p) => {
           const bgColor1 = typeColors[p.types[0]] || "#A8A77A";
           const bgColor2 = p.types[1] ? typeColors[p.types[1]] : bgColor1;
