@@ -35,11 +35,14 @@ const PokemonList = () => {
   }, []);
 
   useEffect(() => {
-    if (searchTerm != "") {
+    const trimmedTerm = searchTerm.trim();
+    if (trimmedTerm !== "") {
       const filtered = pokemon.filter((p) =>
-        p.name.toLowerCase().includes(searchTerm.toLowerCase())
+        p.name.toLowerCase().includes(trimmedTerm.toLowerCase())
       );
       setFilteredPokemon(filtered);
+    } else {
+      setFilteredPokemon(pokemon);
     }
   }, [searchTerm, pokemon]);
 
