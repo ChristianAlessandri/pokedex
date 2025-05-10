@@ -25,7 +25,7 @@ A responsive Pokédex web application built with [Next.js](https://nextjs.org/),
 1. **Clone the repo:**
 
    ```bash
-   git clone https://github.com/yourusername/pokedex.git
+   git clone https://github.com/ChristianAlessandri/pokedex.git
    cd pokedex
    ```
 
